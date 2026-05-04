@@ -958,16 +958,25 @@ with tab1:
         wl = np.linspace(1e-7, 5e-6, 600)
         planck_val = planck_radiance(wl, 5000) / 1e13
         rj_val = 2 * K_BOLTZMANN * 5000 / (wl**4) / 1e13
-        rj_val = np.clip(rj_val, 0, planck_val.max() * 3)
+
+        # نقص الخط الأحمر عند حد معقول حتى لا ينفجر حجم الصورة
+        rj_clipped = np.clip(rj_val, 0, planck_val.max() * 2.5)
 
         ax2.plot(wl * 1e9, planck_val, color='#00ff88', linewidth=2.5, label="Planck (experimental)")
-        ax2.plot(wl * 1e9, rj_val, color='#ff4444', linewidth=2, linestyle='--',
+        ax2.plot(wl * 1e9, rj_clipped, color='#ff4444', linewidth=2, linestyle='--',
                  label="Rayleigh-Jeans")
+
+        # سهم أحمر سميك يشير للأعلى عند نهاية الخط المقصوص = يؤول للانهاية
+        ax2.annotate('',
+                     xy=(100, planck_val.max() * 1.18),
+                     xytext=(100, planck_val.max() * 0.85),
+                     arrowprops=dict(arrowstyle='->', color='#ff4444', lw=4))
+
         ax2.set_xlabel('Wavelength (nm)', color='#ccc', fontsize=11)
         ax2.set_ylabel('Spectral Radiance', color='#ccc', fontsize=11)
-        ax2.set_ylim(0, planck_val.max() * 1.5)
+        ax2.set_ylim(0, planck_val.max() * 1.2)
         ax2.legend(fontsize=10, facecolor='#1a1a2e', edgecolor='#444', labelcolor='#ccc')
-        ax2.annotate('UV Catastrophe\n→ ∞ !!!', xy=(200, planck_val.max() * 1.3),
+        ax2.annotate('UV Catastrophe\n→ ∞ !!!', xy=(200, planck_val.max() * 1.05),
                      fontsize=11, color='#ff4444', fontweight='bold',
                      bbox=dict(boxstyle='round', facecolor='#2a0a0a', edgecolor='#ff4444'))
         ax2.axvspan(100, 380, alpha=0.1, color='#ff00ff')
