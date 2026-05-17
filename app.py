@@ -820,12 +820,13 @@ st.markdown("""
 # ======================================================================
 # TABS
 # ======================================================================
-tab1, tab2, tab3, tab4, tab5 = st.tabs([
+tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
     "🟢 الجسم الأسود | Blackbody",
     "💛 الكهروضوئية | Photoelectric",
     "🔵 تفسير أينشتين | Einstein",
     "🟣 جهد الإيقاف | Stopping Potential",
-    "🔴 كومبتون | Compton"
+    "🔴 كومبتون | Compton",
+    "🎬 الدرس الكامل | Full Lesson"
 ])
 
 # ======================================================================
@@ -1707,6 +1708,577 @@ with tab5:
     }
     st.markdown(comp_steps_explain[comp_step], unsafe_allow_html=True)
 
+# ======================================================================
+# TAB 6: FULL INTERACTIVE LESSON
+# ======================================================================
+with tab6:
+
+    # Initialize session state
+    if 'lesson_slide' not in st.session_state:
+        st.session_state.lesson_slide = 0
+    if 'lesson_auto' not in st.session_state:
+        st.session_state.lesson_auto = False
+
+    total_slides = 12
+    current = st.session_state.lesson_slide
+
+    # Progress bar
+    progress_pct = (current + 1) / total_slides
+    st.markdown(
+        f"<div style='background:#1a1a2e; border-radius:10px; padding:8px 15px; margin-bottom:10px; "
+        f"display:flex; align-items:center; gap:12px;'>"
+        f"<span style='color:#ccc; font-size:0.9em; font-family:Noto Sans Arabic; white-space:nowrap;'>"
+        f"الشريحة {current+1} من {total_slides}</span>"
+        f"<div style='flex:1; background:#333; border-radius:5px; height:8px;'>"
+        f"<div style='background:linear-gradient(90deg,#3a7bd5,#00d2ff); height:8px; "
+        f"border-radius:5px; width:{progress_pct*100}%; transition:width 0.5s;'></div>"
+        f"</div></div>", unsafe_allow_html=True
+    )
+
+    # Auto-play
+    col_auto1, col_auto2 = st.columns([1, 3])
+    with col_auto1:
+        auto_toggle = st.checkbox("⏩ تشغيل تلقائي", value=st.session_state.lesson_auto,
+                                   key="auto_check")
+        st.session_state.lesson_auto = auto_toggle
+    with col_auto2:
+        if auto_toggle:
+            with st.empty():
+                import time
+                for sec in range(8, 0, -1):
+                    st.markdown(
+                        f"<div style='text-align:center; color:#888; font-size:0.85em; "
+                        f"padding:5px;'>⏳ الانتقال التلقائي بعد {sec} ثوانٍ...</div>",
+                        unsafe_allow_html=True
+                    )
+                    time.sleep(1)
+            if current < total_slides - 1:
+                st.session_state.lesson_slide += 1
+                st.rerun()
+            else:
+                st.session_state.lesson_auto = False
+                st.rerun()
+
+    st.markdown("---")
+
+    # ================================================================
+    # SLIDE CONTENT
+    # ================================================================
+
+    if current == 0:
+        st.markdown("""
+        <div style="text-align:center; padding:30px;">
+            <h1 style="font-size:2em; color:#00d2ff; font-family:Noto Sans Arabic;">
+                ⚛️ الطبيعة الجسيمية للضوء</h1>
+            <h2 style="font-size:1.3em; color:#b8c6db; font-family:Noto Sans Arabic;">
+                الفيزياء الحديثة - الوحدة السابعة</h2>
+            <p style="color:#888; font-size:1em; margin-top:20px; font-family:Noto Sans Arabic;">
+                درس تفاعلي كامل خطوة بخطوة</p>
+            <div style="margin-top:30px; background:#1a1a2e; display:inline-block; padding:15px 40px;
+                        border-radius:15px; border:1px solid #3a7bd5;">
+                <p style="color:#f7971e; font-size:1.2em; font-weight:bold; font-family:Noto Sans Arabic;">
+                    إعداد: Israa Youssuf Samara</p>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+        st.markdown("""
+        <div style="background:#1b1b3a; padding:20px; border-radius:12px; border:1px solid #3a7bd5;
+                    color:#e0e0e0; font-family:Noto Sans Arabic; line-height:2;">
+        <b>📌 ماذا سنتعلم في هذا الدرس؟</b><br><br>
+        🔹 ما هو الجسم الأسود ولماذا إشعاعه مهم<br>
+        🔹 لماذا فشلت الفيزياء الكلاسيكية (كارثة الأشعة فوق البنفسجية)<br>
+        🔹 كيف حلّ بلانك المشكلة بفكرة تكمية الطاقة<br>
+        🔹 ما هي الظاهرة الكهروضوئية ولماذا عجزت الفيزياء الكلاسيكية عن تفسيرها<br>
+        🔹 كيف فسّر أينشتين الظاهرة بفكرة الفوتون<br>
+        🔹 ما هي ظاهرة كومبتون وماذا تثبت<br>
+        🔹 الخلاصة: ازدواجية طبيعة الضوء
+        </div>
+        """, unsafe_allow_html=True)
+
+    elif current == 1:
+        st.markdown("""
+        <h2 style="color:#00d2ff; font-family:Noto Sans Arabic;">🤔 لماذا نحتاج فيزياء حديثة؟</h2>
+        """, unsafe_allow_html=True)
+        st.markdown("""
+        <div style="background:#1b1b3a; padding:18px; border-radius:12px; border:1px solid #3a7bd5;
+                    color:#e0e0e0; font-family:Noto Sans Arabic; line-height:2.2;">
+        في أواخر القرن التاسع عشر، اعتقد العلماء أن الفيزياء الكلاسيكية تفسّر كل شيء:<br><br>
+        ✅ قوانين نيوتن → حركة الأجسام<br>
+        ✅ نظرية ماكسويل → الضوء كموجات كهرمغناطيسية (حيود، تداخل، انكسار)<br><br>
+        <b style="color:#ff6644;">لكن ظهرت ظواهر جديدة لم تستطع الفيزياء الكلاسيكية تفسيرها:</b><br><br>
+        ❌ إشعاع الجسم الأسود → كارثة الأشعة فوق البنفسجية<br>
+        ❌ الظاهرة الكهروضوئية → تنبؤات خاطئة تماماً<br>
+        ❌ ظاهرة كومبتون → لا يمكن تفسيرها بموجات<br><br>
+        <b style="color:#00ff88;">← هذا دفع العلماء لتطوير نظرية جديدة: فيزياء الكم!</b>
+        </div>
+        """, unsafe_allow_html=True)
+
+        fig_intro, ax_intro = plt.subplots(figsize=(8, 3))
+        fig_intro.patch.set_facecolor('#0d1117')
+        ax_intro.set_facecolor('#0d1117')
+        ax_intro.set_xlim(0, 10)
+        ax_intro.set_ylim(0, 3)
+        ax_intro.axis('off')
+        items = [
+            (1, 2.2, 'فيزياء كلاسيكية', '#666', '→'),
+            (4, 2.2, 'ظواهر جديدة', '#ff4444', '→'),
+            (7, 2.2, 'فيزياء الكم', '#00ff88', '→'),
+            (1, 1.0, 'نيوتن + ماكسويل', '#555', ''),
+            (4, 1.0, 'أشعة سوداء\nكهروضوئية\nكومبتون', '#ff6666', ''),
+            (7, 1.0, 'بلانك + أينشتين\n+ كومبتون', '#44ff88', ''),
+        ]
+        for x, y, txt, col, arrow in items:
+            ax_intro.text(x, y, txt, fontsize=11, color=col, ha='center',
+                         fontweight='bold', fontfamily='Noto Sans Arabic')
+        for x in [3, 6]:
+            ax_intro.annotate('', xy=(x+0.3, 2.2), xytext=(x-0.3, 2.2),
+                            arrowprops=dict(arrowstyle='->', color='#888', lw=2))
+        plt.tight_layout()
+        st.pyplot(fig_intro)
+        plt.close()
+
+    elif current == 2:
+        st.markdown("""
+        <h2 style="color:#00d2ff; font-family:Noto Sans Arabic;">🔲 ما هو الجسم الأسود؟</h2>
+        """, unsafe_allow_html=True)
+        st.markdown("""
+        <div style="background:#1b1b3a; padding:18px; border-radius:12px; border:1px solid #3a7bd5;
+                    color:#e0e0e0; font-family:Noto Sans Arabic; line-height:2.2;">
+        تخيّل جسماً يمتص <b>كل</b> الأشعة التي تسقط عليه مهما كان ترددها.<br><br>
+        <b>الجسم الأسود = جسم مثالي</b> يمتصّ الأشعة كلها بنسبة 100%.<br>
+        لذلك سمّي "أسود" لأنه لا يعكس أي ضوء.<br><br>
+        <b style="color:#ffaa00;">مثال عملي:</b> ثقب صغير في جدار تجويف أجوف. الأشعة تدخل من الثقب
+        وتتشتت داخل التجويف حتى تُمتص بالكامل. لا تعود خارجة.<br><br>
+        <b style="color:#00ff88;">المهم:</b> هذا الجسم يشعّ طاقة تعتمد <b>فقط</b> على درجة حرارته،
+        وليس على مادته أو لونه. هذا يجعله مثالياً لدراسة الإشعاع الحراري.
+        </div>
+        """, unsafe_allow_html=True)
+
+        col_bb_anim, col_bb_desc = st.columns([1, 1])
+        with col_bb_anim:
+            components.html(blackbody_cavity_html(4000), height=370)
+        with col_bb_desc:
+            st.markdown("""
+            <div style="background:#0d1b2a; padding:15px; border-radius:10px; border:1px solid #1b4965;
+                        color:#ccc; font-family:Noto Sans Arabic; line-height:2; font-size:0.95em;">
+            <b>🔍 انظر للمحاكاة:</b><br><br>
+            • النقاط المتحركة = الإشعاع داخل التجويف<br>
+            • عندما تصطدم بالجدار، تُمتص وتُعاد إشعاعها<br>
+            • بعضها يهرب عبر <b>الثقب</b> في الأعلى<br>
+            • هذا الإشعاع الخارج = إشعاع الجسم الأسود<br>
+            • لونه يعتمد على درجة الحرارة فقط
+            </div>
+            """, unsafe_allow_html=True)
+
+    elif current == 3:
+        st.markdown("""
+        <h2 style="color:#00d2ff; font-family:Noto Sans Arabic;">📈 منحنيات إشعاع الجسم الأسود</h2>
+        """, unsafe_allow_html=True)
+        st.markdown("""
+        <div style="background:#1b1b3a; padding:18px; border-radius:12px; border:1px solid #3a7bd5;
+                    color:#e0e0e0; font-family:Noto Sans Arabic; line-height:2.2;">
+        عندما نرسم شدة الإشعاع مقابل الطول الموجي عند درجات حرارة مختلفة، نلاحظ:<br><br>
+        <b style="color:#ffaa00;">1.</b> كلما زادت الحرارة، زادت المساحة تحت المنحنى
+        → <b style="color:#00ff88;">الطاقة الكلية تزداد</b><br><br>
+        <b style="color:#ffaa00;">2.</b> كلما زادت الحرارة، تنزاح القمة نحو <b>الأطوال الموجية الأقصر</b>
+        (قانون فين: λ_max = b/T)<br><br>
+        <b style="color:#ffaa00;">3.</b> عند 3000 K: معظم الإشعاع تحت حمراء (السلك يلمع أحمر)<br>
+        عند 6000 K: القمة في الضوء المرئي (≈ الشمس - تلمع أبيض)
+        </div>
+        """, unsafe_allow_html=True)
+
+        wavelengths = np.linspace(1e-7, 3e-6, 500)
+        fig_bb, ax_bb = plt.subplots(figsize=(9, 5))
+        fig_bb.patch.set_facecolor('#0d1117')
+        ax_bb.set_facecolor('#0d1117')
+        ax_bb.tick_params(colors='#aaa')
+        ax_bb.spines['bottom'].set_color('#444')
+        ax_bb.spines['left'].set_color('#444')
+        ax_bb.spines['top'].set_visible(False)
+        ax_bb.spines['right'].set_visible(False)
+        ax_bb.set_xlabel('الطول الموجي (nm)', color='#ccc', fontsize=11)
+        ax_bb.set_ylabel('شدة الإشعاع', color='#ccc', fontsize=11)
+        for T, c, l in [(3000,'#ff4444','3000 K'),(4000,'#ff8844','4000 K'),
+                        (5000,'#ffcc44','5000 K'),(6000,'#ffffff','6000 K')]:
+            r = planck_radiance(wavelengths, T) / 1e13
+            ax_bb.plot(wavelengths*1e9, r, color=c, linewidth=2, label=l)
+            ax_bb.fill_between(wavelengths*1e9, r, alpha=0.1, color=c)
+        ax_bb.axvspan(380, 780, alpha=0.05, color='white')
+        ax_bb.legend(fontsize=10, facecolor='#1a1a2e', edgecolor='#444', labelcolor='#ccc')
+        plt.tight_layout()
+        st.pyplot(fig_bb)
+        plt.close()
+
+    elif current == 4:
+        st.markdown("""
+        <h2 style="color:#ff4444; font-family:Noto Sans Arabic;">⚠️ كارثة الأشعة فوق البنفسجية</h2>
+        """, unsafe_allow_html=True)
+        st.markdown("""
+        <div style="background:#2a0a0a; padding:18px; border-radius:12px; border:1px solid #ff4444;
+                    color:#f0a8a8; font-family:Noto Sans Arabic; line-height:2.2;">
+        استخدم رايلي وجينز الفيزياء الكلاسيكية لتفسير منحنى إشعاع الجسم الأسود:<br><br>
+        الكلاسيكية تقول: الطاقة متّصلة، يمكن أن تكون أي قيمة.<br>
+        النتيجة: المنحنى يتفق مع التجربة في <b>الأشعة تحت الحمراء</b> فقط!<br><br>
+        <b style="color:#ff0000; font-size:1.1em;">المشكلة الكبرى:</b>
+        عند الأطوال الموجية القصيرة (فوق بنفسجية)، النموذج يتوقع أن الشدة
+        <b style="color:#ff0;">تؤول إلى اللانهاية!</b><br><br>
+        هذا مستحيل! لو كان صحيحاً، لأصدر أي جسم ساخن طاقة لا نهائية.
+        عُرف هذا بـ <b>"كارثة الأشعة فوق البنفسجية"</b>.
+        </div>
+        """, unsafe_allow_html=True)
+
+        wl = np.linspace(1e-7, 5e-6, 600)
+        fig_cat, ax_cat = plt.subplots(figsize=(8, 5))
+        fig_cat.patch.set_facecolor('#0d1117')
+        ax_cat.set_facecolor('#0d1117')
+        ax_cat.tick_params(colors='#aaa')
+        ax_cat.spines['bottom'].set_color('#444')
+        ax_cat.spines['left'].set_color('#444')
+        ax_cat.spines['top'].set_visible(False)
+        ax_cat.spines['right'].set_visible(False)
+        pv = planck_radiance(wl, 5000) / 1e13
+        rv = 2 * K_BOLTZMANN * 5000 / (wl**4) / 1e13
+        rc = np.clip(rv, 0, pv.max() * 2.5)
+        ax_cat.plot(wl*1e9, pv, color='#00ff88', linewidth=2.5, label='القيم التجريبية')
+        ax_cat.plot(wl*1e9, rc, color='#ff4444', linewidth=2, linestyle='--',
+                    label='رايلي-جينز')
+        ax_cat.annotate('', xy=(100, pv.max()*1.18), xytext=(100, pv.max()*0.85),
+                       arrowprops=dict(arrowstyle='->', color='#ff4444', lw=4))
+        ax_cat.text(160, pv.max()*1.05, '→ ∞', fontsize=18, color='#ff3333', fontweight='bold')
+        ax_cat.set_ylim(0, pv.max()*1.2)
+        ax_cat.set_xlabel('الطول الموجي (nm)', color='#ccc', fontsize=11)
+        ax_cat.set_ylabel('شدة الإشعاع', color='#ccc', fontsize=11)
+        ax_cat.legend(fontsize=10, facecolor='#1a1a2e', edgecolor='#444', labelcolor='#ccc')
+        ax_cat.axvspan(100, 380, alpha=0.08, color='#ff00ff')
+        ax_cat.text(240, pv.max()*0.1, 'UV', fontsize=11, color='#ff66ff', fontweight='bold')
+        plt.tight_layout()
+        st.pyplot(fig_cat)
+        plt.close()
+
+    elif current == 5:
+        st.markdown("""
+        <h2 style="color:#00ff88; font-family:Noto Sans Arabic;">✅ حلّ بلانك: تكمية الطاقة (1900)</h2>
+        """, unsafe_allow_html=True)
+        st.markdown("""
+        <div style="background:#0a2a0a; padding:18px; border-radius:12px; border:1px solid #2ecc71;
+                    color:#a8f0c8; font-family:Noto Sans Arabic; line-height:2.2;">
+        لتفسير المنحنى التجريبي، افترض بلانك فكرة ثورية:<br><br>
+        <b style="color:#fff; font-size:1.1em;">الطاقة لا تُشعّ أو تُمتص بشكل متّصل!</b><br><br>
+        بل على شكل <b>حزم منفصلة</b> تُسمّى <b style="color:#ffd200;">كمّات (Quanta)</b>.<br><br>
+        كل كمة طاقة عند تردد f تساوي:<br>
+        </div>
+        """, unsafe_allow_html=True)
+        st.code("E = hf        و        En = nhf", language="text")
+        st.markdown("""
+        <div style="background:#1b1b3a; padding:18px; border-radius:12px; border:1px solid #3a7bd5;
+                    color:#e0e0e0; font-family:Noto Sans Arabic; line-height:2.2;">
+        حيث:<br>
+        • <b>h = 6.63 × 10⁻³⁴ J·s</b> (ثابت بلانك) - أصغر وحدة طاقة في الكون<br>
+        • <b>f</b>: التردد<br>
+        • <b>n</b>: عدد صحيح موجب (1, 2, 3, ...)<br><br>
+        <b style="color:#ffaa00;">المعنى:</b> الطاقة عند تردد معيّن لا يمكن أن تكون 1.5hf أو 2.7hf<br>
+        بل只能是 <b>hf, 2hf, 3hf, ...</b> فقط! كالسلم: يمكنك الوقوف على درجة لكن ليس بين درجتين.<br><br>
+        <b style="color:#00ff88;">بهذا الافتراض البسيط، تطابق حسابات بلانك مع التجربة تماماً!</b>
+        </div>
+        """, unsafe_allow_html=True)
+
+    elif current == 6:
+        st.markdown("""
+        <h2 style="color:#00d2ff; font-family:Noto Sans Arabic;">⚡ ما هي الظاهرة الكهروضوئية؟</h2>
+        """, unsafe_allow_html=True)
+        st.markdown("""
+        <div style="background:#1b1b3a; padding:18px; border-radius:12px; border:1px solid #3a7bd5;
+                    color:#e0e0e0; font-family:Noto Sans Arabic; line-height:2.2;">
+        في عام 1887، لاحظ <b>هيرتز</b> أن الشرارة الكهربائية تحدث أسرع عند تعريض جهازه لأشعة فوق بنفسجية.<br><br>
+        <b style="color:#ffaa00;">السبب:</b> الأشعة فوق البنفسجية تُحرّر إلكترونات من سطح الفلز!<br><br>
+        <b style="color:#fff;">الظاهرة الكهروضوئية = انبعاث إلكترونات من سطح فلز عند سقوط ضوء بتردد مناسب</b><br><br>
+        الإلكترونات المنبعثة تُسمّى <b>الإلكترونات الضوئية (Photoelectrons)</b>.<br><br>
+        <b style="color:#ffaa00;">المفاهيم الجديدة:</b><br>
+        • <b>تردد العتبة f₀:</b> أدنى تردد يلزم لتحرير إلكترون (يعتمد على نوع الفلز)<br>
+        • <b>اقتران الشغل Φ:</b> أقل طاقة لتحرير إلكترون من سطح الفلز
+        </div>
+        """, unsafe_allow_html=True)
+
+        components.html(
+            photoelectric_animation_html(True, '#aa44ff', 60, 300), height=370
+        )
+
+    elif current == 7:
+        st.markdown("""
+        <h2 style="color:#ff4444; font-family:Noto Sans Arabic;">🧪 ماذا لو نجرّب بأنفسنا؟</h2>
+        """, unsafe_allow_html=True)
+        st.markdown("""
+        <div style="background:#1b1b3a; padding:18px; border-radius:12px; border:1px solid #3a7bd5;
+                    color:#e0e0e0; font-family:Noto Sans Arabic; line-height:2;">
+        لنختبر صوديوم (Na) = اقتران شغل 2.28 eV → تردد عتبة ≈ 5.5 × 10¹⁴ Hz
+        </div>
+        """, unsafe_allow_html=True)
+
+        test_cases = [
+            ("ضوء أحمر 700 nm", 700, False, "#ff2222",
+             "❌ لا يحدث انبعاث! رغم أن الضوء أحمر قوي.<br><b>السبب:</b> f < f₀ → طاقة كل فوتون أقل من Φ.<br><b>حتى لو زادت الشدة مليون مرة!</b>"),
+            ("أشعة فوق بنفسجية 300 nm", 300, True, "#aa44ff",
+             "✅ يحدث انبعاث فوري!<br><b>السبب:</b> f > f₀ → طاقة الفوتون أكبر من Φ.<br>الفائض يتحول لطاقة حركية للإلكترون."),
+            ("أشعة فوق بنفسجية 250 nm", 250, True, '#8800ff',
+             "✅ انبعاث بطاقة حركية أكبر!<br><b>السبب:</b> التردد أكبر → طاقة الفوتون أكبر → فائض طاقة أكثر → KE أكبر.<br><b>الشدة نفسها لكن الطاقة الحركية زادت!</b>"),
+        ]
+
+        for i, (label, wl, emit, color, explain) in enumerate(test_cases):
+            with st.container():
+                c_t1, c_t2 = st.columns([1, 1.3])
+                with c_t1:
+                    st.markdown(f"<b style='color:{color};'>{label}</b>", unsafe_allow_html=True)
+                    components.html(
+                        photoelectric_animation_html(emit, color, 50, wl), height=250
+                    )
+                with c_t2:
+                    box_type = "result-box" if emit else "warning-box"
+                    st.markdown(f'<div class="{box_type}" style="font-family:Noto Sans Arabic; line-height:2;">{explain}</div>',
+                               unsafe_allow_html=True)
+            if i < 2:
+                st.markdown("<hr style='border-color:#333;'>", unsafe_allow_html=True)
+
+        st.markdown("""
+        <div style="background:#0d1b2a; padding:15px; border-radius:10px; border:1px solid #ffaa00;
+                    color:#ffcc44; font-family:Noto Sans Arabic; line-height:2;">
+        <b>💡 الخلاصة من التجربة:</b><br>
+        • ما يحدد الانبعاث هو <b>التردد</b> وليس الشدة<br>
+        • ما يحدد الطاقة الحركية هو <b>التردد</b> وليس الشدة<br>
+        • الشدة تؤثر فقط على <b>عدد</b> الإلكترونات المتحررة<br>
+        <b style="color:#ff4444;">← هذا يتناقض تماماً مع الفيزياء الكلاسيكية!</b>
+        </div>
+        """, unsafe_allow_html=True)
+
+    elif current == 8:
+        st.markdown("""
+        <h2 style="color:#ff4444; font-family:Noto Sans Arabic;">❌ فشل الفيزياء الكلاسيكية</h2>
+        """, unsafe_allow_html=True)
+
+        c_fail1, c_fail2 = st.columns(2)
+        with c_fail1:
+            st.markdown("""
+            <div style="background:#2a0a0a; padding:18px; border-radius:12px; border:1px solid #ff4444;
+                        color:#f0a8a8; font-family:Noto Sans Arabic; line-height:2.2;">
+            <h4 style="color:#ff6666;">النموذج الموجي (كلاسيكي) يتوقع:</h4><br>
+            ❌ الإلكترونات تنبعث عند <b>أي تردد</b> بشرط شدة كافية<br><br>
+            ❌ الانبعاث يحتاج <b>وقتاً</b> لامتصاص الطاقة<br><br>
+            ❌ زيادة الشدة → زيادة <b>الطاقة الحركية</b><br><br>
+            <b style="color:#ff0;">كل هذه التنبؤات خاطئة!</b>
+            </div>
+            """, unsafe_allow_html=True)
+        with c_fail2:
+            st.markdown("""
+            <div style="background:#0a2a0a; padding:18px; border-radius:12px; border:1px solid #2ecc71;
+                        color:#a8f0c8; font-family:Noto Sans Arabic; line-height:2.2;">
+            <h4 style="color:#44ff88;">النتائج التجريبية الفعلية:</h4><br>
+            ✅ الإلكترونات تنبعث فقط عند f ≥ f₀ <b>مهما كانت الشدة</b><br><br>
+            ✅ الانبعاث <b>فوري</b> عند f ≥ f₀<br><br>
+            ✅ زيادة الشدة → زيادة <b>عدد</b> الإلكترونات فقط<br><br>
+            ✅ زيادة التردد → زيادة <b>الطاقة الحركية</b><br><br>
+            <b style="color:#ffd200;">← نحتاج تفسيراً جديداً!</b>
+            </div>
+            """, unsafe_allow_html=True)
+
+    elif current == 9:
+        st.markdown("""
+        <h2 style="color:#00d2ff; font-family:Noto Sans Arabic;">🧠 تفسير أينشتين (1905): الفوتون</h2>
+        """, unsafe_allow_html=True)
+        st.markdown("""
+        <div style="background:#1b1b3a; padding:18px; border-radius:12px; border:1px solid #3a7bd5;
+                    color:#e0e0e0; font-family:Noto Sans Arabic; line-height:2.2;">
+        استخدم أينشتين فكرة بلانك وقال:<br><br>
+        <b style="color:#fff; font-size:1.1em;">الضوء لا ينتقل كموجات فقط، بل كـ <span style="color:#ffd200;">جسيمات</span> تُسمّى <span style="color:#ffd200;">فوتونات</span>!</b><br><br>
+        كل فوتون يحمل طاقة: <b>E = hf</b><br><br>
+        <b style="color:#ffaa00;">الفكرة الجوهرية:</b><br>
+        عند سقوط الضوء على الفلز، كل فوتون يعطي طاقته كاملة <b>لإلكترون واحد فقط</b>.<br><br>
+        <b style="color:#00ff88;">لماذا نجح هذا التفسير؟</b><br><br>
+        • إذا E_foton < Φ → الفوتون لا يملك طاقة كافية → <b>لا انبعاث</b> (حتى لو كثرت الفوتونات)<br>
+        • إذا E_foton = Φ → يتحرر الإلكترون بالكاد → <b>KE = 0</b><br>
+        • إذا E_foton > Φ → يتحرر الإلكترون والفائض = <b>طاقة حركية</b><br>
+        • الانبعاث فوري لأن الطاقة مركّزة في فوتون واحد، ليست مبعثرة كالموجة
+        </div>
+        """, unsafe_allow_html=True)
+
+        st.code("KEmax = hf - Φ    أو    hf = Φ + ½mv²max", language="text")
+
+        st.markdown("""
+        <div style="background:#0d1b2a; padding:15px; border-radius:10px; border:1px solid #ffaa00;
+                    color:#ffcc44; font-family:Noto Sans Arabic; line-height:2;">
+        <b>💡 هذا يفسّر كل شيء:</b><br>
+        • لماذا f ≥ f₀؟ ← لأن f₀ = Φ/h أدنى تردد يعطي طاقة = Φ<br>
+        • لماذا الشدة لا تؤثر على KE؟ ← لأن الشدة تزيد عدد الفوتونات لا طاقة كل فوتون<br>
+        • لماذا الانبعاث فوري؟ ← لأن فوتون واحد يكفي لتحرير إلكترون واحد
+        </div>
+        """, unsafe_allow_html=True)
+
+    elif current == 10:
+        st.markdown("""
+        <h2 style="color:#00d2ff; font-family:Noto Sans Arabic;">📈 التحليل البياني لمعادلة أينشتين</h2>
+        """, unsafe_allow_html=True)
+        st.markdown("""
+        <div style="background:#1b1b3a; padding:18px; border-radius:12px; border:1px solid #3a7bd5;
+                    color:#e0e0e0; font-family:Noto Sans Arabic; line-height:2.2;">
+        عام 1916، أثبت <b>ميليكان</b> تجريبياً أن العلاقة بين KE_max والتردد خطّية.<br><br>
+        <b style="color:#ffaa00;">ماذا يخبرنا الرسم البياني؟</b><br>
+        • <b>الميل = h</b> (ثابت بلانك) → نفسه لجميع الفلزات!<br>
+        • <b>تقاطع مع محور الطاقة = -Φ</b> → يحدد اقتران الشغل<br>
+        • <b>تقاطع مع محور التردد = f₀</b> → يحدد تردد العتبة<br>
+        • خطوط عدة فلزات <b>متوازية</b> (نفس الميل) لكن تبدأ من نقاط مختلفة
+        </div>
+        """, unsafe_allow_html=True)
+
+        fig_analysis, ax_analysis = plt.subplots(figsize=(9, 5.5))
+        fig_analysis.patch.set_facecolor('#0d1117')
+        ax_analysis.set_facecolor('#0d1117')
+        ax_analysis.tick_params(colors='#aaa')
+        ax_analysis.spines['bottom'].set_color('#444')
+        ax_analysis.spines['left'].set_color('#444')
+        ax_analysis.spines['top'].set_visible(False)
+        ax_analysis.spines['right'].set_visible(False)
+        ax_analysis.set_xlabel('التردد f (×10¹⁴ Hz)', color='#ccc', fontsize=11)
+        ax_analysis.set_ylabel('KE_max (eV)', color='#ccc', fontsize=11)
+        ax_analysis.axhline(y=0, color='#444', linewidth=0.8)
+        ax_analysis.axvline(x=0, color='#444', linewidth=0.8)
+
+        for name, data in list(MATERIALS.items())[:5]:
+            f0_t = data["phi_eV"] * EV_TO_J / H_PLANCK / 1e14
+            f_l = np.linspace(f0_t, 15, 200)
+            KE_l = H_PLANCK * f_l * 1e14 / EV_TO_J - data["phi_eV"]
+            ax_analysis.plot(f_l, KE_l, color=data["color"], linewidth=2,
+                           label=f'{data["symbol"]} (Φ={data["phi_eV"]} eV)')
+            ax_analysis.plot(f0_t, 0, 'o', color=data["color"], markersize=5)
+
+        ax_analysis.annotate('slope = h', xy=(10, 4), fontsize=12, color='#ffaa00',
+                           fontweight='bold',
+                           bbox=dict(boxstyle='round', facecolor='#1a1a2e', edgecolor='#ffaa00'))
+        ax_analysis.annotate('-Φ₁', xy=(0.5, -2.14), fontsize=10, color='#FFD700')
+        ax_analysis.annotate('-Φ₂', xy=(0.5, -2.28), fontsize=10, color='#C0C0C0')
+        ax_analysis.legend(fontsize=9, facecolor='#1a1a2e', edgecolor='#444', labelcolor='#ccc')
+        plt.tight_layout()
+        st.pyplot(fig_analysis)
+        plt.close()
+
+    elif current == 11:
+        st.markdown("""
+        <h2 style="color:#ff6644; font-family:Noto Sans Arabic;">🌀 ظاهرة كومبتون (1923)</h2>
+        """, unsafe_allow_html=True)
+        st.markdown("""
+        <div style="background:#1b1b3a; padding:18px; border-radius:12px; border:1px solid #3a7bd5;
+                    color:#e0e0e0; font-family:Noto Sans Arabic; line-height:2.2;">
+        بعد نجاح أينشتين، جاء <b>كومبتون</b> بتأكيد آخر:<br><br>
+        أسقط أشعة سينية على هدف غرافيت ولاحظ:<br>
+        <b style="color:#ff6644;">الأشعة المشتتة لها طول موجي أطول من الساقطة!</b> (λf > λi)<br><br>
+        <b style="color:#ffaa00;">التفسير الجسيمي (ناجح):</b><br>
+        الفوتون يتصادم مع الإلكترون كجسيمين:<br>
+        • يحفظ <b>الطاقة</b>: Ei = Ef + Ee<br>
+        • يحفظ <b>الزخم الخطي</b>: pi = pf + pe (كمتجهات)<br>
+        • الفوتون يفقد جزءاً من طاقته → λ تزداد<br>
+        • الإلكترون يكتسب الطاقة المفقودة ويصطرد
+        </div>
+        """, unsafe_allow_html=True)
+
+        st.code("Δλ = (h/me·c)(1 - cosθ) = λC(1 - cosθ)", language="text")
+        st.markdown("""
+        <div style="background:#1b1b3a; padding:15px; border-radius:10px; border:1px solid #3a7bd5;
+                    color:#e0e0e0; font-family:Noto Sans Arabic; line-height:2;">
+        حيث λC = 2.43 × 10⁻¹² m (طول موجة كومبتون للإلكترون)<br><br>
+        <b style="color:#00ff88;">ملاحظات مهمة:</b><br>
+        • Δλ يعتمد على زاوية التشتت θ فقط، لا على λi<br>
+        • عند θ = 0°: Δλ = 0 (لا تصادم)<br>
+        • عند θ = 180°: Δλ = 2λC (أقصى تغيّر - تشتت خلفي)<br>
+        • <b style="color:#ffaa00;">الزخم الخطي للفوتون:</b> p = h/λ = hf/c
+        </div>
+        """, unsafe_allow_html=True)
+
+        components.html(compton_animation_html(90, 71.2), height=380)
+
+    elif current == 12:
+        st.markdown("""
+        <h2 style="color:#ffd200; font-family:Noto Sans Arabic;">🏆 الخلاصة: ازدواجية الموجة والجسيم</h2>
+        """, unsafe_allow_html=True)
+        st.markdown("""
+        <div style="background:#1b1b3a; padding:20px; border-radius:12px; border:1px solid #ffd200;
+                    color:#e0e0e0; font-family:Noto Sans Arabic; line-height:2.3;">
+        من كل ما درسناه، نصل إلى conclution مهم:<br><br>
+        <b style="color:#fff; font-size:1.2em;">الضوء له طبيعة مزدوجة:</b><br><br>
+        <span style="color:#00d2ff;">🔵 طبيعة موجية:</span> تُفسر الحيود والتداخل والانكسار والاستقطاب<br><br>
+        <span style="color:#ffd200;">🟡 طبيعة جسيمية:</span> تُفسر الظاهرة الكهروضوئية وظاهرة كومبتون<br><br>
+        <b style="color:#00ff88;">حسب الظاهرة التي ندرسها، نستخدم النموذج المناسب.</b><br><br>
+        <hr style="border-color:#444;">
+        <b>📌 ملخص الدرس:</b><br><br>
+        1. الجسم الأسود → كارثة فوق بنفسجية → <b>بلانك:</b> تكمية الطاقة E = hf<br>
+        2. كهروضوئية → فشل كلاسيكي → <b>أينشتين:</b> الفوتون KEmax = hf - Φ<br>
+        3. كومبتون → فشل موجي → <b>إثبات:</b> الفوتون يحمل زخماً p = h/λ<br>
+        4. النتيجة: <b style="color:#ffd200;">ازدواجية الموجة-الجسيم للضوء</b>
+        </div>
+        """, unsafe_allow_html=True)
+
+        fig_final, ax_final = plt.subplots(figsize=(8, 3.5))
+        fig_final.patch.set_facecolor('#0d1117')
+        ax_final.set_facecolor('#0d1117')
+        ax_final.set_xlim(0, 10)
+        ax_final.set_ylim(0, 4)
+        ax_final.axis('off')
+        ax_final.text(2.5, 3.2, 'ضوء', fontsize=22, color='#fff', ha='center',
+                     fontweight='bold', fontfamily='Noto Sans Arabic')
+        ax_final.text(2.5, 2.2, 'Light', fontsize=14, color='#888', ha='center')
+        # Wave side
+        ax_final.add_patch(mpatches.FancyBboxPatch((0.2, 0.3), 2.1, 1.5,
+                           boxstyle="round,pad=0.1", facecolor='#0a1a3a', edgecolor='#00d2ff', lw=2))
+        ax_final.text(1.25, 1.2, 'موجي\nحيود + تداخل', fontsize=10, color='#00d2ff',
+                     ha='center', fontweight='bold', fontfamily='Noto Sans Arabic')
+        ax_final.annotate('', xy=(0.5, 2.7), xytext=(1.8, 2.7),
+                         arrowprops=dict(arrowstyle='->', color='#00d2ff', lw=2))
+        # Particle side
+        ax_final.add_patch(mpatches.FancyBboxPatch((2.8, 0.3), 2.4, 1.5,
+                           boxstyle="round,pad=0.1", facecolor='#1a1a0a', edgecolor='#ffd200', lw=2))
+        ax_final.text(4.0, 1.2, 'جسيمي\nكهروضوئية + كومبتون', fontsize=10, color='#ffd200',
+                     ha='center', fontweight='bold', fontfamily='Noto Sans Arabic')
+        ax_final.annotate('', xy=(4.5, 2.7), xytext=(3.2, 2.7),
+                         arrowprops=dict(arrowstyle='->', color='#ffd200', lw=2))
+        # Result
+        ax_final.add_patch(mpatches.FancyBboxPatch((6.5, 0.8), 3.2, 1.5,
+                           boxstyle="round,pad=0.1", facecolor='#0a2a0a', edgecolor='#00ff88', lw=2))
+        ax_final.text(8.1, 1.7, 'ازدواجية', fontsize=14, color='#00ff88',
+                     ha='center', fontweight='bold', fontfamily='Noto Sans Arabic')
+        ax_final.text(8.1, 1.1, 'Wave-Particle Duality', fontsize=9, color='#66aa66',
+                     ha='center')
+        ax_final.annotate('', xy=(6.8, 1.55), xytext=(5.5, 1.55),
+                         arrowprops=dict(arrowstyle='->', color='#888', lw=1.5))
+        plt.tight_layout()
+        st.pyplot(fig_final)
+        plt.close()
+
+        st.markdown("""
+        <div style="text-align:center; padding:20px; background:linear-gradient(135deg,#0f0c29,#302b63);
+                    border-radius:12px; font-family:Noto Sans Arabic;">
+            <p style="color:#b8c6db; font-size:1.1em;">انتهى الدرس</p>
+            <p style="color:#f7971e; font-size:1.4em; font-weight:bold;">إعداد Israa Youssuf Samara</p>
+            <p style="color:#666; font-size:0.9em;">الفيزياء الحديثة - الطبيعة الجسيمية للضوء</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+    # ================================================================
+    # NAVIGATION BUTTONS
+    # ================================================================
+    st.markdown("---")
+    nav1, nav2, nav3, nav4 = st.columns([1, 1, 1, 1])
+    with nav1:
+        if st.button("⏮️ البداية", use_container_width=True):
+            st.session_state.lesson_slide = 0
+            st.rerun()
+    with nav2:
+        if st.button("◀ السابق", use_container_width=True, disabled=(current == 0)):
+            st.session_state.lesson_slide -= 1
+            st.rerun()
+    with nav3:
+        if st.button("التالي ▶", use_container_width=True, disabled=(current == total_slides - 1)):
+            st.session_state.lesson_slide += 1
+            st.rerun()
+    with nav4:
+        if st.button("⏭️ النهاية", use_container_width=True):
+            st.session_state.lesson_slide = total_slides - 1
+            st.rerun()
 
 # ======================================================================
 # FOOTER
